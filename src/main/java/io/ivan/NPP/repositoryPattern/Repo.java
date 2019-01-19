@@ -8,5 +8,7 @@ public interface Repo {
 		
 	void InsertTeam(TeamInfo team);
 	List<String> GetTeam(TeamInfo team);
+	List<String> GetAllTeam();
+	void RemoveTeam(TeamInfo team);
 	
 }

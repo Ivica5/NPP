@@ -82,6 +82,60 @@ public class RepoImplementation implements Repo{
 		}
 		return teamInfos;
 	}
+	
+	@Override
+	public List<String> GetAllTeam() {
+		List<String> allTeamInfos = new ArrayList<>();
+	
+		try {
+			con = DriverManager.getConnection(url,user,password);
+			statement = (PreparedStatement) con.prepareStatement("SELECT*FROM teams");
+			myRs = statement.executeQuery();
+		      
+		      while (myRs.next())
+		      {
+					allTeamInfos.add(myRs.getString("TeamName"));
+					allTeamInfos.add(myRs.getString("TeamAddress"));
+					allTeamInfos.add(myRs.getString("TeamPhone"));
+					allTeamInfos.add(myRs.getString("TeamWebsite"));
+					allTeamInfos.add(myRs.getString("TeamEmail"));
+					allTeamInfos.add(myRs.getString("TeamFounded"));
+					allTeamInfos.add(myRs.getString("TeamClubColors"));
+					allTeamInfos.add(myRs.getString("TeamVenue"));
+		      }
+		      
+		      statement.close();
+		      con.close();
+		      
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		} catch (SQLException e) {
+			System.out.println(error);
+		}
+		return allTeamInfos;
+	}
+
+	@Override
+	public void RemoveTeam(TeamInfo team) {
+		try {
+			con = DriverManager.getConnection(url,user,password);
+			
+			statement = (PreparedStatement) con.prepareStatement("DELETE FROM teams WHERE TeamName=?");
+			statement.setString(1, team.getName());
+			statement.executeUpdate();
+			System.out.println("Team deleted!");
+			
+			statement.close();
+			con.close();
+			
+		} catch (RuntimeException e) {
+			throw new RuntimeException();
+		} catch (SQLException e) {
+			System.out.println(error);
+		}
+		
+	}
+
 
 }
 

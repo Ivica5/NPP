@@ -75,4 +75,28 @@ public class DataController {
 		return "redirect:/home";
 		
 	}
+	
+	@PostMapping("/getAllTeams")
+	public String getAllTeamsResults(Model model) {	
+		
+		List<String> allTeamsInfo = repo.GetAllTeam();
+		
+		model.addAttribute("infos", allTeamsInfo);
+		
+		return "baseTeamInfo";
+	
+	}
+	
+	@PostMapping("/removeTeam")
+	public String removeTeam(Model model, @RequestParam("removeTeam") String teamName) {
+		
+		TeamInfo teamInfo = GetTeamData.getData(teamName);
+		
+		repo.RemoveTeam(teamInfo);
+	
+		return "redirect:/home";
+		
+	}
+	
+	
 }
