@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -16,60 +15,61 @@ import io.ivan.NPP.apiRequest.CollectData;
 
 @Component
 public class GroupFactory {
-
+	
+	private String allTables;
+    private Group group;
+    private List<Team> teams;
+    private JsonObject allTablesJson;
+    private JsonArray tableInfo;
+    
 	public Group makeGroup(String groupName) {
-
-        Group g = null;
-        List<Team> teams = null;
+		allTablesJson = new JsonObject();
+      
+        allTables = CollectData.getInstance().getJSON("http://api.football-data.org/v2/competitions/WC/standings");
         
-        String tablesData = CollectData.getInstance().getJSON("http://api.football-data.org/v2/competitions/WC/standings");
-        
-		JsonElement jelement = new JsonParser().parse(tablesData);
-		
-		JsonObject jobject = jelement.getAsJsonObject();	
-		
-		jelement = jobject.getAsJsonArray("standings");
-
-		JsonArray jArray = (JsonArray) jelement;
-		
+        allTablesJson = new JsonParser().parse(allTables).getAsJsonObject();	
+        	
 		switch(groupName){
 			case "A":
-				jobject = (JsonObject) jArray.get(0);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(0);
 				break;
 			case "B":
-				jobject = (JsonObject) jArray.get(3);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(3);
 				break;
 			case "C":
-				jobject = (JsonObject) jArray.get(6);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(6);
 				break;
 			case "D":
-				jobject = (JsonObject) jArray.get(9);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(9);
 				break;
 			case "E":
-				jobject = (JsonObject) jArray.get(12);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(12);
 				break;
 			case "F":
-				jobject = (JsonObject) jArray.get(15);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(15);
 				break;
 			case "G":
-				jobject = (JsonObject) jArray.get(18);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(18);
 				break;
 			case "H":
-				jobject = (JsonObject) jArray.get(21);
+				allTablesJson = (JsonObject) allTablesJson.getAsJsonArray("standings").get(21);
 				break;
 		}
 		
-		jelement = jobject.getAsJsonArray("table");
+		tableInfo = allTablesJson.getAsJsonArray("table");
 		
 		Type groupList = new TypeToken<ArrayList<Team>>(){}.getType();	
-		teams = new Gson().fromJson(jelement, groupList);
+		teams = new Gson().fromJson(tableInfo, groupList);
 		
 		if (teams != null) {
-			g = new Group();
-			g.setTeams(teams);
+			group = new Group();
+			group.setTeams(teams);
+			
+			return group;
+		}else {
+			return null;
 		}
-		
-        return g;
+
 	}
 
 }

@@ -2,14 +2,9 @@ package io.ivan.NPP.factoryPattern;
 
 public class Team {
 	
-	private int position;
+	private int position, playedGames, points, goalsFor, goalsAgainst, goalDifference;
 	private TeamName team;
-	private int playedGames;
-	private int points;
-	private int goalsFor;
-	private int goalsAgainst;
-	private int goalDifference;
-    	
+	
 	private static class TeamName{
 		private String name;
 	}

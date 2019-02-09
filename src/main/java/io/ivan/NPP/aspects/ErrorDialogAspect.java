@@ -26,50 +26,63 @@ public class ErrorDialogAspect {
 	@Autowired
 	private RepoImplementation repo;
 	
+	private TeamInfo teamInfo;
+	private List<String> team;
+	private Group group;
+	
 	@Before("execution(* io.ivan.NPP.DataController.*(..))")
 	public void teamsAdvice(JoinPoint joinPoint) {
-		
-		TeamInfo team;
-		List<String> teamResults;
-		
+	
 		System.out.println("Pointcut triggered");
 		System.out.println(joinPoint.getSignature().getName());
 				
 		switch(joinPoint.getSignature().getName()) {
 			case "tablesInfo":
-				Group group = tablicaFactory.makeGroup((String) joinPoint.getArgs()[1]);
+				group = tablicaFactory.makeGroup((String) joinPoint.getArgs()[1]);
+				
 				if(group == null) {
 					throw new RuntimeException("wrongInputModal");
 				}
+				
 				break;
-			case "getAllTeamsResults":
-				teamResults = repo.GetAllTeam();				
-				if(teamResults.isEmpty()) {
+			case "getAllTeamsInfo":
+				team = repo.GetAllTeams();
+				
+				if(team.isEmpty()) {
 					throw new RuntimeException("baseModal");
 				}
+				
 				break;
 			case "getTeam":
-				team = GetTeamData.getData((String) joinPoint.getArgs()[1]);
-				if(team == null) {
-					throw new RuntimeException("wrongInputModal");
-				}
-				teamResults = repo.GetTeam(team);			
-				if(teamResults.isEmpty()) {
+				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+						
+				if(teamInfo == null) {
 					throw new RuntimeException("baseModal");
 				}
+				
+				team = repo.GetTeam(teamInfo);
+				
+				if(team.isEmpty()) {
+					throw new RuntimeException("baseModal");
+				}
+				
 				break;
 			case "saveTeam":
 			case "teamInfo":
-				team = GetTeamData.getData((String) joinPoint.getArgs()[1]);
-				if(team == null) {
+				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+				
+				if(teamInfo == null) {
 					throw new RuntimeException("wrongInputModal");
 				}
+				
 				break;
 			case "removeTeam":
-				team = GetTeamData.getData((String) joinPoint.getArgs()[1]);		
-				if(team == null){
+				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+
+				if(teamInfo == null){
 					throw new RuntimeException("baseModal");
-				}
+				}							
+				
 				break;
 		}	
 	}

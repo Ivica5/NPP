@@ -6,12 +6,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Downloader implements IDownloader {
-
-    HttpURLConnection c = null;
-
+	
+	private String line;
+    private BufferedReader br;
+    private StringBuilder sb;
+    private HttpURLConnection c;
+    private URL u;
+    
     public String downloadData(String url) {
         try {
-            URL u = new URL(url);
+            u = new URL(url);
             c = (HttpURLConnection) u.openConnection();
             c.setRequestMethod("GET");
             c.setRequestProperty("Content-length", "0");
@@ -24,10 +28,9 @@ public class Downloader implements IDownloader {
             switch (status) {
             case 200:
             case 201:
-                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                sb = new StringBuilder();
 
-                StringBuilder sb = new StringBuilder();
-                String line;
                 while ((line = br.readLine()) != null) {
                     sb.append(line + "\n");
                 }

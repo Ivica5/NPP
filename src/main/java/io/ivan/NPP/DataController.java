@@ -23,10 +23,14 @@ public class DataController {
 	@Autowired
 	private RepoImplementation repo;
 	
+	private Group group;
+	private TeamInfo teamInfo;
+	private List<String> team;
+	
 	@PostMapping("/tableInfo")
 	public String tablesInfo(Model model, @RequestParam("tableInfo") String tableInfo) {
 		
-		Group group = tablicaFactory.makeGroup(tableInfo);
+		group = tablicaFactory.makeGroup(tableInfo);
 
         model.addAttribute("teams", group.getTeams());
         
@@ -37,16 +41,16 @@ public class DataController {
 	@PostMapping("/teamInfo")
 	public String teamInfo(Model model, @RequestParam("teamInfo") String teamName) {
 		
-		TeamInfo team = GetTeamData.getData(teamName);
+		teamInfo = GetTeamData.getData(teamName);
 		
-		model.addAttribute("name", team.getName());
-		model.addAttribute("address", team.getAddress());
-		model.addAttribute("phone", team.getPhone());
-		model.addAttribute("website", team.getWebsite());	
-		model.addAttribute("email", team.getEmail());	
-		model.addAttribute("founded", team.getFounded());	
-		model.addAttribute("clubColors", team.getClubColors());
-		model.addAttribute("venue", team.getVenue());
+		model.addAttribute("name", teamInfo.getName());
+		model.addAttribute("address", teamInfo.getAddress());
+		model.addAttribute("phone", teamInfo.getPhone());
+		model.addAttribute("website", teamInfo.getWebsite());	
+		model.addAttribute("email", teamInfo.getEmail());	
+		model.addAttribute("founded", teamInfo.getFounded());	
+		model.addAttribute("clubColors", teamInfo.getClubColors());
+		model.addAttribute("venue", teamInfo.getVenue());
 		
 		return "teamInfo";
 			
@@ -55,11 +59,11 @@ public class DataController {
 	@PostMapping("/getTeam")
 	public String getTeam(Model model, @RequestParam("getTeam") String teamName) {
 		
-		TeamInfo team = GetTeamData.getData(teamName);
+		teamInfo = GetTeamData.getData(teamName);
 		
-		List<String> teamInfos = repo.GetTeam(team);
+		team = repo.GetTeam(teamInfo);
 		
-		model.addAttribute("infos", teamInfos);
+		model.addAttribute("infos", team);
 		
 		return "baseTeamInfo";
 		
@@ -68,18 +72,18 @@ public class DataController {
 	@PostMapping("/saveTeam")
 	public String saveTeam(Model model, @RequestParam("saveTeam") String teamName) {
 		
-		TeamInfo team = GetTeamData.getData(teamName);
+		teamInfo = GetTeamData.getData(teamName);
 			
-		repo.InsertTeam(team);
+		repo.InsertTeam(teamInfo);
 		
 		return "redirect:/home";
 		
 	}
 	
 	@PostMapping("/getAllTeams")
-	public String getAllTeamsResults(Model model) {	
+	public String getAllTeamsInfo(Model model) {	
 		
-		List<String> allTeamsInfo = repo.GetAllTeam();
+		List<String> allTeamsInfo = repo.GetAllTeams();
 		
 		model.addAttribute("infos", allTeamsInfo);
 		
@@ -90,7 +94,7 @@ public class DataController {
 	@PostMapping("/removeTeam")
 	public String removeTeam(Model model, @RequestParam("removeTeam") String teamName) {
 		
-		TeamInfo teamInfo = GetTeamData.getData(teamName);
+		teamInfo = GetTeamData.getData(teamName);
 		
 		repo.RemoveTeam(teamInfo);
 	

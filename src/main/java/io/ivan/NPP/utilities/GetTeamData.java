@@ -1,7 +1,5 @@
 package io.ivan.NPP.utilities;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -11,40 +9,35 @@ import io.ivan.NPP.builderPattern.TeamInfoBuilder;
 
 public class GetTeamData {
 		
+	private static final int numberOfTeams = 32;
+	private static String allTeams;
+	private static JsonObject allTeamsJson,teamInfo;
+	
 	public static TeamInfo getData(String teamName) {
-		TeamInfo teamInfo = null;
-		int count = 0;
-		
-		String teams = CollectData.getInstance().getJSON("http://api.football-data.org/v2/competitions/WC/teams"); 
-		
-	    JsonElement jelement = new JsonParser().parse(teams);
+			
+		allTeams = CollectData.getInstance().getJSON("http://api.football-data.org/v2/competitions/WC/teams"); 
 	     
-	    JsonObject jobject = jelement.getAsJsonObject();	
-	    
-	    count = jobject.get("count").getAsInt();
-	    
-	    JsonArray jarray = jobject.getAsJsonArray("teams");
-	    		
-		for(int i = 0; i < count; i++){
-			jobject = jarray.get(i).getAsJsonObject();
+	    allTeamsJson = new JsonParser().parse(allTeams).getAsJsonObject();	
+	        		
+		for(int i = 0; i < numberOfTeams; i++){
+			teamInfo = allTeamsJson.getAsJsonArray("teams").get(i).getAsJsonObject();
 
-			if(jobject.get("name").getAsString().equals(teamName)){
-				 teamInfo = new TeamInfoBuilder()
-							 		 .setName(jobject.get("name").getAsString())
-									 .setAddress(jobject.get("address").getAsString())
-									 .setPhone(jobject.get("phone").getAsString())
-									 .setWebsite(jobject.get("website").getAsString())
-									 .setEmail(jobject.get("email").getAsString())
-									 .setFounded(jobject.get("founded").getAsInt())
-									 .setClubColors(jobject.get("clubColors").getAsString())
-									 .setVenue(jobject.get("venue").getAsString())
+			if(teamInfo.get("name").getAsString().equals(teamName)){
+				 return new TeamInfoBuilder()
+							 		 .setName(teamInfo.get("name").getAsString())
+									 .setAddress(teamInfo.get("address").getAsString())
+									 .setPhone(teamInfo.get("phone").getAsString())
+									 .setWebsite(teamInfo.get("website").getAsString())
+									 .setEmail(teamInfo.get("email").getAsString())
+									 .setFounded(teamInfo.get("founded").getAsInt())
+									 .setClubColors(teamInfo.get("clubColors").getAsString())
+									 .setVenue(teamInfo.get("venue").getAsString())
 									 .build();
-								
-				break;		 
+										 
 			}
 		}
 		
-		return teamInfo;
+		return null;
 	}	
 }
 

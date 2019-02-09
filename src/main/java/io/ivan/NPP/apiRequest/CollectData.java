@@ -2,7 +2,7 @@ package io.ivan.NPP.apiRequest;
 
 public class CollectData {
 
-    static private CollectData instance;
+	private static CollectData instance;
 
     private CollectData() {
 

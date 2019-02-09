@@ -2,14 +2,8 @@ package io.ivan.NPP.builderPattern;
 
 public class TeamInfoBuilder {
 	
-	private String name;
-	private String address;
-	private String phone;
-	private String website;
-	private String email;
+	private String name,address,phone,website,email,clubColors,venue;
 	private int founded;
-	private String clubColors;
-	private String venue;
 	
 	public TeamInfoBuilder setName(String name) {
 		this.name = name;

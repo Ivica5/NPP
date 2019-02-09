@@ -15,13 +15,14 @@ import io.ivan.NPP.builderPattern.TeamInfo;
 @Component
 public class RepoImplementation implements Repo{
 	
-	String error = "Something went wrong :(";
-	String user = "user";
-	String password = "user123";
-	String url = "jdbc:mysql://localhost:3306/demo?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
-	Connection con = null;
-	PreparedStatement statement = null;
-	ResultSet myRs = null;
+	private String error = "Something went wrong :(";
+	private String user = "user";
+	private String password = "user123";
+	private String url = "jdbc:mysql://localhost:3306/demo?useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
+	private PreparedStatement statement;
+	private Connection con;	
+	private ResultSet myRs;
+	private List<String> teamInfos,allTeamsInfo;
 	
 	@Override
 	public void InsertTeam(TeamInfo team) {
@@ -53,7 +54,7 @@ public class RepoImplementation implements Repo{
 
 	@Override
 	public List<String> GetTeam(TeamInfo team) {
-		List<String> teamInfos = new ArrayList<>();
+		teamInfos = new ArrayList<>();
 		
 		try {
 			con = DriverManager.getConnection(url,user,password);
@@ -84,8 +85,8 @@ public class RepoImplementation implements Repo{
 	}
 	
 	@Override
-	public List<String> GetAllTeam() {
-		List<String> allTeamInfos = new ArrayList<>();
+	public List<String> GetAllTeams() {
+		allTeamsInfo = new ArrayList<>();
 	
 		try {
 			con = DriverManager.getConnection(url,user,password);
@@ -94,14 +95,14 @@ public class RepoImplementation implements Repo{
 		      
 		      while (myRs.next())
 		      {
-					allTeamInfos.add(myRs.getString("TeamName"));
-					allTeamInfos.add(myRs.getString("TeamAddress"));
-					allTeamInfos.add(myRs.getString("TeamPhone"));
-					allTeamInfos.add(myRs.getString("TeamWebsite"));
-					allTeamInfos.add(myRs.getString("TeamEmail"));
-					allTeamInfos.add(myRs.getString("TeamFounded"));
-					allTeamInfos.add(myRs.getString("TeamClubColors"));
-					allTeamInfos.add(myRs.getString("TeamVenue"));
+		    	  allTeamsInfo.add(myRs.getString("TeamName"));
+		    	  allTeamsInfo.add(myRs.getString("TeamAddress"));
+		    	  allTeamsInfo.add(myRs.getString("TeamPhone"));
+		    	  allTeamsInfo.add(myRs.getString("TeamWebsite"));
+		    	  allTeamsInfo.add(myRs.getString("TeamEmail"));
+		    	  allTeamsInfo.add(myRs.getString("TeamFounded"));
+		    	  allTeamsInfo.add(myRs.getString("TeamClubColors"));
+		    	  allTeamsInfo.add(myRs.getString("TeamVenue"));
 		      }
 		      
 		      statement.close();
@@ -112,7 +113,7 @@ public class RepoImplementation implements Repo{
 		} catch (SQLException e) {
 			System.out.println(error);
 		}
-		return allTeamInfos;
+		return allTeamsInfo;
 	}
 
 	@Override
