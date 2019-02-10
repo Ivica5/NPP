@@ -30,60 +30,58 @@ public class ErrorDialogAspect {
 	private List<String> team;
 	private Group group;
 	
-	@Before("execution(* io.ivan.NPP.DataController.*(..))")
-	public void teamsAdvice(JoinPoint joinPoint) {
+	@Before("execution(* io.ivan.NPP.DataController.tablesInfo(..))")
+	public void tablesInfo(JoinPoint joinPoint) {
+		group = tablicaFactory.makeGroup((String) joinPoint.getArgs()[1]);
+		
+		if(group == null) {
+			throw new RuntimeException("wrongInputModal");
+		}
+	}
 	
-		System.out.println("Pointcut triggered");
-		System.out.println(joinPoint.getSignature().getName());
-				
-		switch(joinPoint.getSignature().getName()) {
-			case "tablesInfo":
-				group = tablicaFactory.makeGroup((String) joinPoint.getArgs()[1]);
-				
-				if(group == null) {
-					throw new RuntimeException("wrongInputModal");
-				}
-				
-				break;
-			case "getAllTeamsInfo":
-				team = repo.GetAllTeams();
-				
-				if(team.isEmpty()) {
-					throw new RuntimeException("baseModal");
-				}
-				
-				break;
-			case "getTeam":
-				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
-						
-				if(teamInfo == null) {
-					throw new RuntimeException("baseModal");
-				}
-				
-				team = repo.GetTeam(teamInfo);
-				
-				if(team.isEmpty()) {
-					throw new RuntimeException("baseModal");
-				}
-				
-				break;
-			case "saveTeam":
-			case "teamInfo":
-				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
-				
-				if(teamInfo == null) {
-					throw new RuntimeException("wrongInputModal");
-				}
-				
-				break;
-			case "removeTeam":
-				teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
-
-				if(teamInfo == null){
-					throw new RuntimeException("baseModal");
-				}							
-				
-				break;
+	@Before("execution(* io.ivan.NPP.DataController.teamInfo(..))")
+	public void teamInfo(JoinPoint joinPoint) {
+		teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+		
+		if(teamInfo == null) {
+			throw new RuntimeException("wrongInputModal");
 		}	
 	}
+	
+	@Before("execution(* io.ivan.NPP.DataController.getAllTeamsInfo(..))")
+	public void getAllTeamsInfo() {
+		team = repo.GetAllTeams();
+		
+		if(team.isEmpty()) {
+			throw new RuntimeException("baseModal");
+		}
+	}
+	
+	@Before("execution(* io.ivan.NPP.DataController.saveTeam(..))")
+	public void saveTeam(JoinPoint joinPoint) {
+		teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+		
+		if(teamInfo == null) {
+			throw new RuntimeException("wrongInputModal");
+		}	
+	}
+	
+	@Before("execution(* io.ivan.NPP.DataController.getTeam(..))")
+	public void getTeam(JoinPoint joinPoint) {
+		teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+		
+		if(teamInfo == null) {
+			throw new RuntimeException("baseModal");
+		}
+	}
+	
+	@Before("execution(* io.ivan.NPP.DataController.removeTeam(..))")
+	public void removeTeam(JoinPoint joinPoint) {
+		teamInfo = GetTeamData.getData((String) joinPoint.getArgs()[1]);
+		
+		if(teamInfo == null){
+			throw new RuntimeException("baseModal");
+		}		
+	}	
 }
+
